@@ -28,47 +28,108 @@ interface ProductCardProps {
 export default function ProductCard({ product, index, isComparing = false, onCompareChange }: ProductCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   return (
     <motion.div
       className="group relative bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300"
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.3, delay: index * 0.05 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ 
+        duration: 1.2, 
+        delay: index * 0.1,
+        ease: 'easeOut'
+      }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       whileHover={{ y: -4 }}
     >
       {/* Image Container */}
       <div className="relative w-full h-48 sm:h-56 md:h-64 bg-gray-100 overflow-hidden">
-        <div className="relative w-full h-full">
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        </div>
+        <motion.div 
+          className="relative w-full h-full"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ 
+            duration: 1.0, 
+            delay: index * 0.1 + 0.3,
+            ease: 'easeOut'
+          }}
+        >
+          <motion.div
+            className="relative w-full h-full"
+            initial={{ opacity: 0 }}
+            animate={{ 
+              opacity: imageLoaded ? 1 : 0
+            }}
+            transition={{ 
+              duration: 1.0, 
+              delay: imageLoaded ? index * 0.1 + 0.5 : 0,
+              ease: 'easeOut'
+            }}
+          >
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              onLoad={() => setImageLoaded(true)}
+              priority={index < 4}
+            />
+          </motion.div>
+          {!imageLoaded && (
+            <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+          )}
+        </motion.div>
         
         {/* Badges */}
         {product.originalPrice && (
-          <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold">
+          <motion.div 
+            className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ 
+              duration: 1.0, 
+              delay: index * 0.1 + 0.8,
+              ease: 'easeOut'
+            }}
+          >
             SALE
-          </div>
+          </motion.div>
         )}
         {product.freeShipping && (
-          <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded text-xs font-semibold flex items-center gap-1">
+          <motion.div 
+            className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded text-xs font-semibold flex items-center gap-1"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ 
+              duration: 1.0, 
+              delay: index * 0.1 + 0.85,
+              ease: 'easeOut'
+            }}
+          >
             <Truck size={12} />
             FREE SHIP
-          </div>
+          </motion.div>
         )}
 
         {/* Quick Actions - Show on Hover */}
-        <div className={`absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-all duration-300 flex flex-col sm:flex-row items-center justify-center gap-2 px-2 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+        <motion.div 
+          className={`absolute inset-0 bg-black/0 group-hover:bg-black/5 flex flex-col sm:flex-row items-center justify-center gap-2 px-2 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
           <motion.button
             className="bg-white px-2 py-1.5 sm:px-4 sm:py-2 rounded-lg shadow-lg flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium hover:bg-primary-50 hover:text-primary-600 transition-colors"
+            initial={{ scale: 0.8, y: 10 }}
+            animate={{ scale: isHovered ? 1 : 0.8, y: isHovered ? 0 : 10 }}
+            transition={{ duration: 0.2, delay: 0.05 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -77,13 +138,16 @@ export default function ProductCard({ product, index, isComparing = false, onCom
           </motion.button>
           <motion.button
             className="bg-primary-600 text-white px-2 py-1.5 sm:px-4 sm:py-2 rounded-lg shadow-lg flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium hover:bg-primary-700 transition-colors"
+            initial={{ scale: 0.8, y: 10 }}
+            animate={{ scale: isHovered ? 1 : 0.8, y: isHovered ? 0 : 10 }}
+            transition={{ duration: 0.2, delay: 0.1 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <ShoppingCart size={14} className="sm:w-4 sm:h-4" />
             <span className="hidden sm:inline">Add to Cart</span>
           </motion.button>
-        </div>
+        </motion.div>
 
         {/* Wishlist Button */}
         <motion.button
@@ -108,17 +172,43 @@ export default function ProductCard({ product, index, isComparing = false, onCom
       </div>
 
       {/* Content */}
-      <div className="p-2 sm:p-3 md:p-4">
+      <motion.div 
+        className="p-2 sm:p-3 md:p-4"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.0, delay: index * 0.1 + 0.6, ease: 'easeOut' }}
+      >
         {/* Category */}
-        <p className="text-xs text-gray-500 mb-1 uppercase tracking-wide truncate">{product.category}</p>
+        <motion.p 
+          className="text-xs text-gray-500 mb-1 uppercase tracking-wide truncate"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.0, delay: index * 0.1 + 0.7, ease: 'easeOut' }}
+        >
+          {product.category}
+        </motion.p>
         
         {/* Product Name */}
-        <h3 className="text-xs sm:text-sm font-medium text-gray-900 mb-1 sm:mb-2 line-clamp-2 h-8 sm:h-10 leading-4 sm:leading-5 hover:text-primary-600 cursor-pointer">
+        <motion.h3 
+          className="text-xs sm:text-sm font-medium text-gray-900 mb-1 sm:mb-2 line-clamp-2 h-8 sm:h-10 leading-4 sm:leading-5 hover:text-primary-600 cursor-pointer"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.0, delay: index * 0.1 + 0.8, ease: 'easeOut' }}
+        >
           {product.name}
-        </h3>
+        </motion.h3>
 
         {/* Rating */}
-        <div className="flex items-center gap-1 mb-1 sm:mb-2">
+        <motion.div 
+          className="flex items-center gap-1 mb-1 sm:mb-2"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.0, delay: index * 0.1 + 0.9, ease: 'easeOut' }}
+        >
           <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
               <Star
@@ -135,19 +225,31 @@ export default function ProductCard({ product, index, isComparing = false, onCom
           <span className="text-xs text-gray-600 ml-1">
             {product.rating} ({product.reviews})
           </span>
-        </div>
+        </motion.div>
 
         {/* Price */}
-        <div className="flex items-baseline gap-2 mb-2 sm:mb-3 flex-wrap">
+        <motion.div 
+          className="flex items-baseline gap-2 mb-2 sm:mb-3 flex-wrap"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.0, delay: index * 0.1 + 1.0, ease: 'easeOut' }}
+        >
           <span className="text-base sm:text-lg font-bold text-gray-900">{product.price}</span>
           {product.originalPrice && (
             <span className="text-xs sm:text-sm text-gray-500 line-through">{product.originalPrice}</span>
           )}
-        </div>
+        </motion.div>
 
         {/* Compare Checkbox */}
         {onCompareChange && (
-          <div className="flex items-center gap-1.5 sm:gap-2 mb-2">
+          <motion.div 
+            className="flex items-center gap-1.5 sm:gap-2 mb-2"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.0, delay: index * 0.1 + 1.1, ease: 'easeOut' }}
+          >
             <input
               type="checkbox"
               id={`compare-${product.id}`}
@@ -161,20 +263,24 @@ export default function ProductCard({ product, index, isComparing = false, onCom
             >
               Compare
             </label>
-          </div>
+          </motion.div>
         )}
 
         {/* Add to Cart Button */}
         <motion.button
           className="w-full bg-primary-600 text-white py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm hover:bg-primary-700 transition-colors flex items-center justify-center gap-1.5 sm:gap-2"
-          whileHover={{ scale: 1.02 }}
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.0, delay: index * 0.1 + 1.2, ease: 'easeOut' }}
+          whileHover={{ y: -2 }}
           whileTap={{ scale: 0.98 }}
         >
           <ShoppingCart size={14} className="sm:w-4 sm:h-4" />
           <span className="hidden sm:inline">Add to Cart</span>
           <span className="sm:hidden">Add</span>
         </motion.button>
-      </div>
+      </motion.div>
     </motion.div>
   )
 }
