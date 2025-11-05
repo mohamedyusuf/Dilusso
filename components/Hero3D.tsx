@@ -6,7 +6,10 @@ import { OrbitControls, Environment } from '@react-three/drei'
 import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 
-const Chair3D = dynamic(() => import('./Chair3D'), { ssr: false })
+const Chair3D = dynamic(() => import('./Chair3D'), { 
+  ssr: false,
+  loading: () => null,
+})
 
 export default function Hero3D() {
   return (
