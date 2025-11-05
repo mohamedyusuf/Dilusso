@@ -2,11 +2,10 @@
 
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Mesh } from 'three'
-import * as THREE from 'three'
+import { Group } from 'three'
 
 export default function Chair3D() {
-  const chairRef = useRef<Mesh>(null)
+  const chairRef = useRef<Group>(null)
 
   useFrame((state) => {
     if (chairRef.current) {

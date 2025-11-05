@@ -57,7 +57,7 @@ export default function OffersSection() {
             Special Offers
           </h2>
           <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-            Don't miss out on these exclusive deals
+            Don&apos;t miss out on these exclusive deals
           </p>
         </motion.div>
 
